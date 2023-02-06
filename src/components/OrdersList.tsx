@@ -1,14 +1,20 @@
-import {Box, Pagination} from "@mui/material";
-import {DataGrid} from "@mui/x-data-grid";
+import {Box, IconButton, Pagination} from "@mui/material";
+import {DataGrid, GridColDef, GridRenderCellParams} from "@mui/x-data-grid";
 import {useSearchParams} from "react-router-dom";
 import {ChangeEvent, FC, useEffect, useState} from "react";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
-import {useAppDispatch, useAppSelector,orderColumns} from "../utils";
+import {useAppDispatch, useAppSelector} from "../utils";
 import {orderActions} from "../redux/slices";
-import {orderParamsEnum,IOrderParams} from "../types";
+import {orderParamsEnum, IOrderParams, IGroup, IManager} from "../types";
 
 
-const OrdersList: FC<{ query: IOrderParams }> = ({query}) => {
+const OrdersList: FC<{ query: IOrderParams, setPage: (value: number) => void, page: number }> = ({
+                                                                                                     query,
+                                                                                                     setPage,
+                                                                                                     page
+                                                                                                 }) => {
 
         const dispatch = useAppDispatch()
 
@@ -17,9 +23,206 @@ const OrdersList: FC<{ query: IOrderParams }> = ({query}) => {
         const [searchParams, setSearchParams] = useSearchParams();
 
         const order = searchParams.get('order')
-        const current_page = searchParams.get('page')
 
-        const [page, setPage] = useState((current_page && current_page.length) ? +current_page : 1)
+        const [clickedIndex, setClickedIndex] = useState<number|undefined>(-1);
+
+        const orderColumns: GridColDef[] = [
+            {
+                field: 'id',
+                headerName: 'ID',
+                width: 60,
+                disableColumnMenu: true,
+                type: 'number',
+                renderCell: (cellValues: GridRenderCellParams<number>) => {
+                    return (<IconButton onClick={() => {
+                        clickedIndex === cellValues.value ? setClickedIndex(-1) : setClickedIndex(cellValues.value)
+                    }}>{cellValues.value === clickedIndex ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}</IconButton>)
+                },
+            },
+            {
+                field: 'name',
+                headerName: 'First name',
+                width: 120,
+                valueFormatter: ({value}) => value === '' ? 'null' : value,
+                disableColumnMenu: true,
+                type: 'string',
+                renderCell: (cellValues: GridRenderCellParams<number>) => {
+                    return (<IconButton onClick={() => {
+                        clickedIndex === cellValues.value ? setClickedIndex(-1) : setClickedIndex(cellValues.value)
+                    }}>{cellValues.value === clickedIndex ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}</IconButton>)
+                },
+            },
+            {
+                field: 'surname',
+                headerName: 'Last name',
+                width: 120,
+                valueFormatter: ({value}) => value === '' ? 'null' : value,
+                disableColumnMenu: true,
+                type: 'string',
+                renderCell: (cellValues: GridRenderCellParams<number>) => {
+                    return (<IconButton onClick={() => {
+                        clickedIndex === cellValues.value ? setClickedIndex(-1) : setClickedIndex(cellValues.value)
+                    }}>{cellValues.value === clickedIndex ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}</IconButton>)
+                },
+
+            },
+            {
+                field: 'email',
+                headerName: 'Email',
+                width: 120,
+                valueFormatter: ({value}) => value === '' ? 'null' : value,
+                disableColumnMenu: true,
+                type: 'string',
+                renderCell: (cellValues: GridRenderCellParams<number>) => {
+                    return (<IconButton onClick={() => {
+                        clickedIndex === cellValues.value ? setClickedIndex(-1) : setClickedIndex(cellValues.value)
+                    }}>{cellValues.value === clickedIndex ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}</IconButton>)
+                },
+            },
+            {
+                field: 'phone',
+                headerName: 'Phone',
+                width: 120,
+                valueFormatter: ({value}) => value === '' ? 'null' : value,
+                disableColumnMenu: true,
+                type: 'string',
+                renderCell: (cellValues: GridRenderCellParams<number>) => {
+                    return (<IconButton onClick={() => {
+                        clickedIndex === cellValues.value ? setClickedIndex(-1) : setClickedIndex(cellValues.value)
+                    }}>{cellValues.value === clickedIndex ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}</IconButton>)
+                },
+            },
+            {
+                field: 'age',
+                headerName: 'Age',
+                width: 120,
+                valueFormatter: ({value}) => value === null ? 'null' : value,
+                disableColumnMenu: true,
+                type: 'number',
+                renderCell: (cellValues: GridRenderCellParams<number>) => {
+                    return (<IconButton onClick={() => {
+                        clickedIndex === cellValues.value ? setClickedIndex(-1) : setClickedIndex(cellValues.value)
+                    }}>{cellValues.value === clickedIndex ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}</IconButton>)
+                },
+            },
+            {
+                field: 'course',
+                headerName: 'Course',
+                width: 120,
+                valueFormatter: ({value}) => value === '' ? 'null' : value,
+                disableColumnMenu: true,
+                type: 'singleSelect',
+                renderCell: (cellValues: GridRenderCellParams<number>) => {
+                    return (<IconButton onClick={() => {
+                        clickedIndex === cellValues.value ? setClickedIndex(-1) : setClickedIndex(cellValues.value)
+                    }}>{cellValues.value === clickedIndex ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}</IconButton>)
+                },
+            },
+            {
+                field: 'course_format',
+                headerName: 'Course format',
+                width: 120,
+                valueFormatter: ({value}) => value === '' ? 'null' : value,
+                disableColumnMenu: true,
+                type: 'singleSelect',
+                renderCell: (cellValues: GridRenderCellParams<number>) => {
+                    return (<IconButton onClick={() => {
+                        clickedIndex === cellValues.value ? setClickedIndex(-1) : setClickedIndex(cellValues.value)
+                    }}>{cellValues.value === clickedIndex ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}</IconButton>)
+                },
+            },
+            {
+                field: 'course_type',
+                headerName: 'Course type',
+                width: 120,
+                valueFormatter: ({value}) => value === '' ? 'null' : value,
+                disableColumnMenu: true,
+                type: 'singleSelect',
+                renderCell: (cellValues: GridRenderCellParams<number>) => {
+                    return (<IconButton onClick={() => {
+                        clickedIndex === cellValues.value ? setClickedIndex(-1) : setClickedIndex(cellValues.value)
+                    }}>{cellValues.value === clickedIndex ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}</IconButton>)
+                },
+            },
+            {
+                field: 'status',
+                headerName: 'Status',
+                width: 120,
+                valueFormatter: ({value}) => value === null ? 'null' : value,
+                disableColumnMenu: true,
+                type: 'singleSelect',
+                renderCell: (cellValues: GridRenderCellParams<number>) => {
+                    return (<IconButton onClick={() => {
+                        clickedIndex === cellValues.value ? setClickedIndex(-1) : setClickedIndex(cellValues.value)
+                    }}>{cellValues.value === clickedIndex ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}</IconButton>)
+                },
+            },
+            {
+                field: 'sum',
+                headerName: 'Sum',
+                width: 120,
+                valueFormatter: ({value}) => value === null ? 'null' : value,
+                disableColumnMenu: true,
+                type: 'number',
+                renderCell: (cellValues: GridRenderCellParams<number>) => {
+                    return (<IconButton onClick={() => {
+                        clickedIndex === cellValues.value ? setClickedIndex(-1) : setClickedIndex(cellValues.value)
+                    }}>{cellValues.value === clickedIndex ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}</IconButton>)
+                },
+            },
+            {
+                field: 'alreadyPaid',
+                headerName: 'Already paid',
+                width: 120,
+                valueFormatter: ({value}) => value === null ? 'null' : value,
+                disableColumnMenu: true,
+                type: 'number',
+                renderCell: (cellValues: GridRenderCellParams<number>) => {
+                    return (<IconButton onClick={() => {
+                        clickedIndex === cellValues.value ? setClickedIndex(-1) : setClickedIndex(cellValues.value)
+                    }}>{cellValues.value === clickedIndex ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}</IconButton>)
+                },
+            },
+            {
+                field: 'group',
+                headerName: 'Group',
+                width: 120,
+                valueFormatter: ({value}: { value: IGroup }) => value !== null ? value.name : 'null',
+                disableColumnMenu: true,
+                type: 'string',
+                renderCell: (cellValues: GridRenderCellParams<number>) => {
+                    return (<IconButton onClick={() => {
+                        clickedIndex === cellValues.value ? setClickedIndex(-1) : setClickedIndex(cellValues.value)
+                    }}>{cellValues.value === clickedIndex ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}</IconButton>)
+                },
+            },
+            {
+                field: 'created_at',
+                headerName: 'Created at',
+                width: 170,
+                type: "date",
+                valueFormatter: ({value}) => value === null ? 'null' : value.split('T')[0],
+                disableColumnMenu: true,
+                renderCell: (cellValues: GridRenderCellParams<number>) => {
+                    return (<IconButton onClick={() => {
+                        clickedIndex === cellValues.value ? setClickedIndex(-1) : setClickedIndex(cellValues.value)
+                    }}>{cellValues.value === clickedIndex ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}</IconButton>)
+                },
+            },
+            {
+                field: 'manager',
+                headerName: 'Manager',
+                width: 120,
+                valueFormatter: ({value}: { value: IManager }) => value !== null ? value.name : 'null',
+                disableColumnMenu: true,
+                type: 'string',
+                renderCell: (cellValues: GridRenderCellParams<number>) => {
+                    return (<IconButton onClick={() => {
+                        clickedIndex === cellValues.value ? setClickedIndex(-1) : setClickedIndex(cellValues.value)
+                    }}>{cellValues.value === clickedIndex ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}</IconButton>)
+                },
+            },
+        ];
 
         const checkSearchParams = () => {
             query = {}
@@ -101,8 +304,10 @@ const OrdersList: FC<{ query: IOrderParams }> = ({query}) => {
 
                                 query = {
                                     ...query,
-                                    order: sort + model[0].field
+                                    order: sort + model[0].field,
+                                    page: 1
                                 }
+                                setPage(1)
 
                                 setSearchParams((prev) => {
 

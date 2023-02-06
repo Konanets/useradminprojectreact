@@ -1,5 +1,5 @@
 import {
-     Button, Checkbox,
+    Button, Checkbox,
     FormControl,
     InputLabel,
     MenuItem,
@@ -18,10 +18,10 @@ import {IOrderParams} from "../types";
 
 interface IOrderFilterProps {
     query: IOrderParams,
-
+    setPage: (value: number) => void
 }
 
-const OrdersFilter: FC<IOrderFilterProps> = ({query}) => {
+const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
 
 
     const [searchParams, setSearchParams] = useSearchParams();
@@ -51,6 +51,8 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query}) => {
 
         const order = query.order
         const checkOrder = order ? {order} : {}
+
+        setPage(1)
 
         query = {...checkOrder, page: 1}
         query = checkStartDate ? {start_date: startDateValue, ...query} : query

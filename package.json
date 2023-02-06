@@ -12,6 +12,7 @@
     "@mui/styled-engine-sc": "^5.11.0",
     "@mui/system": "^5.11.5",
     "@mui/x-data-grid": "^5.17.20",
+    "@mui/x-data-grid-pro": "^5.17.22",
     "@mui/x-date-pickers": "^5.0.15",
     "@reduxjs/toolkit": "^1.9.1",
     "@types/history": "^5.0.0",

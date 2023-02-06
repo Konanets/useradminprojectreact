@@ -14,7 +14,7 @@ import {useState} from "react";
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate, useSearchParams} from "react-router-dom";
 
 import {OrdersFilter, OrdersList} from "../components";
 import {authActions} from "../redux/slices";
@@ -76,8 +76,12 @@ function MainPage() {
     let query: IOrderParams = {}
 
     const theme = useTheme();
-    const [open, setOpen] = useState(false);
+    const [searchParams, setSearchParams] = useSearchParams();
 
+    let current_page = searchParams.get('page')
+
+    const [open, setOpen] = useState(false);
+    const [page, setPage] = useState((current_page && current_page.length) ? +current_page : 1)
 
     const location = useLocation()
     const navigation = useNavigate()
@@ -147,8 +151,8 @@ function MainPage() {
             </Drawer>
             <Main open={open}>
                 <DrawerHeader/>
-                <OrdersFilter query={query}/>
-                <OrdersList query={query}/>
+                <OrdersFilter query={query} setPage={setPage}/>
+                <OrdersList query={query} setPage={setPage} page={page}/>
             </Main>
         </Box>
     );
