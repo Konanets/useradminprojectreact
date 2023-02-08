@@ -1,3 +1,4 @@
+
 export interface IGetOrderResponse {
     count: number,
     previous: string | number,
@@ -7,7 +8,8 @@ export interface IGetOrderResponse {
 
 export interface IOrderInitialState {
     orders: IGetOrderResponse | null
-    loading: 'pending' | 'failure' | 'success' | 'none'
+    loading: 'pending' | 'failure' | 'success' | 'none',
+    changed: boolean
 }
 
 export interface IOrderParams {
@@ -28,7 +30,7 @@ export interface IOrderParams {
     group?: string,
     start_date?: string,
     end_date?: string
-    my?:boolean
+    my?: boolean
 }
 
 
@@ -53,27 +55,32 @@ export interface IOrder {
     group: IGroup | null
 }
 
-export interface serializedOrder {
-    id: number,
-    name: string | null,
-    surname: string | null,
-    email: string | null,
-    phone: string | null,
-    age: number | null,
-    course: string | null,
-    course_format: string | null,
-    course_type: string | null,
-    alreadyPaid: number | null,
-    sum: number | null,
-    msg: string | null,
-    status: boolean | null,
-    manager: string | null,
-    created_at: string | null,
-    utm: string | null,
-    comments: IComment[],
-    group: string | null
-
+export interface IEditOrder {
+    name?: string,
+    surname?: string,
+    email?: string,
+    phone?: string,
+    age?: number,
+    course?: string,
+    course_format?: string,
+    course_type?: string,
+    alreadyPaid?: number,
+    sum?: number,
+    group?: string,
+    status?: string
 }
+
+export interface IGroupRes {
+    count: number
+    previous: string | null,
+    next: string | null,
+    results: IGroup[]
+}
+
+export interface ICreateGroup {
+    name: string
+}
+
 
 export interface IComment {
     id: number,

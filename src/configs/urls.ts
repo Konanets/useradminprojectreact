@@ -9,7 +9,11 @@ const urls = {
         my: '/users/my'
     },
     orders: {
-        orders: '/orders'
+        orders: '/orders',
+        comments: '/comments'
+    },
+    groups: {
+        groups: '/groups'
     }
 }
 

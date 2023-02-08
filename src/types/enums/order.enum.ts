@@ -16,5 +16,12 @@ export enum orderParamsEnum {
     group = 'group',
     end_date = 'end_date',
     start_date = 'start_date',
-    my='my'
+    my = 'my'
 }
+
+export enum numberFieldsEnum {
+    age = 'age',
+    sum = 'sum',
+    alreadyPaid = 'alreadyPaid'
+}
+
