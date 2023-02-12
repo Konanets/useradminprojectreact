@@ -1,11 +1,11 @@
 import {Box, Pagination} from "@mui/material";
-import {DataGrid, GridColDef} from "@mui/x-data-grid";
+import {DataGrid} from "@mui/x-data-grid";
 import {useSearchParams} from "react-router-dom";
 import {ChangeEvent, FC, useEffect, useState} from "react";
 
 import {orderColumns, useAppDispatch, useAppSelector} from "../utils";
 import {orderActions} from "../redux/slices";
-import {orderParamsEnum, IOrderParams, IGroup, IManager} from "../types";
+import {orderParamsEnum, IOrderParams } from "../types";
 
 
 const OrdersList: FC<{ query: IOrderParams, setPage: (value: number) => void, page: number }> = ({
@@ -20,15 +20,9 @@ const OrdersList: FC<{ query: IOrderParams, setPage: (value: number) => void, pa
 
         const [searchParams, setSearchParams] = useSearchParams();
 
-        const detailStyles = {
-            borderTop: "2px solid",
-            borderTopColor: "primary.main",
-            pt: 2
-        }
+
 
         const order = searchParams.get('order')
-
-        const [clickedIndex, setClickedIndex] = useState<number | undefined>(-1);
 
         const checkSearchParams = () => {
             query = {}

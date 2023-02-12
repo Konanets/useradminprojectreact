@@ -4,7 +4,7 @@ import {authService} from "../../services";
 import {IAuthInitialStore, IUser} from "../../types";
 
 const initialState: IAuthInitialStore = {
-    user: {},
+    user: null,
     userLoading: true,
     authorized: false,
     error: '',
@@ -43,7 +43,7 @@ const authSlice = createSlice({
         },
         logOut: (state) => {
             authService.removeTokens()
-            state.user = {}
+            state.user = null
             state.authorized = false
             state.isLoading = 'none'
             state.userLoading=false

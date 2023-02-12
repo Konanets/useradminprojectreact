@@ -4,8 +4,7 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
-    DialogTitle, Grid, IconButton, TextField
+    DialogTitle, IconButton, TextField
 } from "@mui/material";
 import {FC, useEffect, useRef, useState} from "react";
 import {Preview} from "@mui/icons-material";
@@ -31,7 +30,6 @@ const Comments: FC<ICommentsProps> = ({comments, id}) => {
     const {
         register,
         handleSubmit,
-        formState: {errors},
     } = useForm<{ comment: string }>()
 
 
@@ -78,25 +76,12 @@ const Comments: FC<ICommentsProps> = ({comments, id}) => {
 
             >
                 <DialogTitle id="scroll-dialog-title">Comments</DialogTitle>
-                <DialogContent dividers={true} >
-                    <DialogContentText sx={{
-                        height: '100%',
-                        width: '100%'
-                    }}
-                                       id="scroll-dialog-description"
-                                       ref={descriptionElementRef}
-                                       tabIndex={-1}
-                    >
+                <DialogContent dividers={true} id="scroll-dialog-description"
+                               ref={descriptionElementRef}
+                               tabIndex={-1}>
                         {comments.map((comment) => (
-                            <Grid mt={2} key={comment.id} component={'span'} display={"flex"} flexDirection={'column'}
-                                  justifyContent="left" item xs
-                                  zeroMinWidth >
-                                <Comment comment={comment}/>
-                            </Grid>
-
-
+                                <Comment key={`comment-${comment.id}`} comment={comment}/>
                         ))}
-                    </DialogContentText>
                 </DialogContent>
                 <DialogActions sx={{
                     maxHeight: '250px'

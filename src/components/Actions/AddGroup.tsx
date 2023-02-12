@@ -4,8 +4,9 @@ import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import {useForm} from "react-hook-form";
 
 import {ICreateGroup} from "../../types";
-import {useAppDispatch} from "../../utils";
+import {groupFormValidators, useAppDispatch} from "../../utils";
 import {groupActions} from "../../redux/slices";
+import {joiResolver} from "@hookform/resolvers/joi/dist/joi";
 
 interface IAddGroupProps {
     open: boolean,
@@ -18,8 +19,9 @@ const AddGroup: FC<IAddGroupProps> = ({setOpen, open}) => {
 
     const {
         register,
-        handleSubmit
-    } = useForm<ICreateGroup>()
+        handleSubmit,
+        formState:{errors}
+    } = useForm<ICreateGroup>({resolver: joiResolver(groupFormValidators), mode: 'all'})
 
 
     const handleClose = () => {
@@ -56,6 +58,7 @@ const AddGroup: FC<IAddGroupProps> = ({setOpen, open}) => {
                         type="name"
                         fullWidth
                         variant="standard"
+                        helperText={errors.name?.message}
                         {...register('name')}
                     />
                     <DialogActions>

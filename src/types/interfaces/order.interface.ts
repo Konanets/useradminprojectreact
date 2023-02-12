@@ -47,7 +47,7 @@ export interface IOrder {
     alreadyPaid: number | null,
     sum: number | null,
     msg: string | null,
-    status: boolean | null,
+    status: string | null,
     manager: IManager | null,
     created_at: string | null,
     utm: string | null,
@@ -85,7 +85,9 @@ export interface ICreateGroup {
 export interface IComment {
     id: number,
     comment: string,
-    created_at: string
+    created_at: string,
+    updated_at:string,
+    manager:IManager
 }
 
 

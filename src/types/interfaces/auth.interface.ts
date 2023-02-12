@@ -1,5 +1,5 @@
 export interface IAuthInitialStore {
-    user: IUser | {},
+    user: IUser | null,
     userLoading: boolean
     authorized: boolean,
     error: string,

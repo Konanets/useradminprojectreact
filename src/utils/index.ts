@@ -1,4 +1,6 @@
 export * from './validators'
-export * from './data.unils'
+export * from './data_unils'
 export * from './hooks'
 export * from './router'
+export * from './intlFormat.utils'
+export * from './color.utils'

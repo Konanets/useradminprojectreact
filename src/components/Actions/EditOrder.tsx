@@ -18,6 +18,7 @@ import {IEditOrder, IOrder, numberFieldsEnum} from "../../types";
 import {useAppDispatch, useAppSelector} from "../../utils";
 import {groupActions, orderActions} from "../../redux/slices";
 import {AddGroup} from "./AddGroup";
+import {joiResolver} from "@hookform/resolvers/joi/dist/joi";
 
 
 interface IEditOrderProps {
@@ -237,18 +238,45 @@ const EditOrder: FC<IEditOrderProps> = memo(({prevOrder, open, setOpen}) => {
 
                             <FormControl focused sx={{width: 220, marginRight: 2, marginTop: 2}}>
                                 <InputLabel>Group</InputLabel>
-                                {groups.length && <Select
+                                {groups.length > 0 && <Select
                                     variant={'outlined'}
                                     label="Group"
-                                    defaultValue={''}
+                                    defaultValue={prevOrder.group && prevOrder.group.id ? prevOrder.group.id + '' : ''}
                                     {...register('group')}>
                                     <MenuItem value={''}>None</MenuItem>
-                                    {loading === 'success' && groups.map((group) =>
-                                        <MenuItem key={group.id} value={'' + group.id}>
-                                            {group.name}
-                                        </MenuItem>)}
+                                    {loading === 'success' && groups.map((group) => {
+                                            if (!!prevOrder.group && group.id !== prevOrder.group.id || !prevOrder.group) {
+                                                return (<MenuItem key={group.id} value={'' + group.id}>
+                                                    {group.name}
+                                                </MenuItem>)
+                                            }
+                                        }
+                                    )
+                                    }
+                                    {!!prevOrder.group &&
+                                        <MenuItem key={prevOrder.group.id} value={'' + prevOrder.group.id}>
+                                            {prevOrder.group.name}
+                                        </MenuItem>}
+
                                     <Button disabled={!next} onClick={() => loadMoreGroups()}>Load more</Button>
                                 </Select>}
+                            </FormControl>
+
+                            <FormControl focused sx={{width: 220, marginRight: 2, marginTop: 2}}>
+                                <InputLabel>Status</InputLabel>
+                                <Select
+                                    variant={'outlined'}
+                                    label="Status"
+                                    defaultValue={prevOrder.status?.length ? prevOrder.status : 'В работе'}
+                                    {...register('status')}
+                                >
+                                    <MenuItem value={''}>None</MenuItem>
+                                    <MenuItem value={'В работе'}>В работе</MenuItem>
+                                    <MenuItem value={'Новый'}>Новый</MenuItem>
+                                    <MenuItem value={'Согласен'}>Согласен</MenuItem>
+                                    <MenuItem value={'Не согласен'}>Не согласен</MenuItem>
+                                    <MenuItem value={'Дубляж'}>Дубляж</MenuItem>
+                                </Select>
                             </FormControl>
 
                             <DialogActions sx={{maxHeight: '250px', width: '100%'}}>
