@@ -22,13 +22,16 @@ const authSlice = createSlice({
             state.authorized = true
             state.error = ''
             state.isLoading = 'success'
-            state.userLoading=false
+            state.userLoading = false
         },
         loginFailure: (state, action: PayloadAction<string>) => {
             state.authorized = false
             state.error = action.payload
             state.isLoading = 'failure'
-            state.userLoading=false
+            state.userLoading = false
+        },
+        userLoading: (state) => {
+            state.userLoading = true
         },
         saveUser: (state, action: PayloadAction<IUser>) => {
             state.user = action.payload
@@ -46,8 +49,14 @@ const authSlice = createSlice({
             state.user = null
             state.authorized = false
             state.isLoading = 'none'
-            state.userLoading=false
+            state.userLoading = false
             state.error = ''
+        },
+        activateUser: (state) => {
+            state.error = ''
+        },
+        activateUserFailure: (state, action: PayloadAction<string>) => {
+            state.error = action.payload
         }
     }
 })
@@ -60,7 +69,10 @@ const {
         loginFailure,
         saveUser,
         logOut,
-        saveUserError
+        saveUserError,
+        userLoading,
+        activateUser,
+        activateUserFailure
     }
 } = authSlice
 
@@ -70,7 +82,10 @@ const authActions = {
     loginFailure,
     saveUser,
     logOut,
-    saveUserError
+    saveUserError,
+    userLoading,
+    activateUser,
+    activateUserFailure
 }
 
 export {authActions, authReducer}

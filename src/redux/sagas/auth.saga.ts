@@ -1,11 +1,16 @@
 import * as Effects from 'redux-saga/effects'
 import {AxiosError, isAxiosError} from "axios";
 
-import {ILogin, ILoginTokens, IUser} from "../../types";
+import {ILogin, ILoginTokens, IPassword, IUser} from "../../types";
 import {authService, AxiosRes, history} from "../../services";
 import {authActions} from "../slices";
 
-const takeLatest: any = Effects.takeLatest;
+const takeEvery: any = Effects.takeEvery;
+
+interface ILoadData {
+    data: IPassword,
+    token: string
+}
 
 function* loginOnAction({data: user}: { data: ILogin }) {
     if (typeof user === 'undefined') return
@@ -22,6 +27,20 @@ function* loginOnAction({data: user}: { data: ILogin }) {
                 yield Effects.put(authActions.loginFailure(serverError.response.data.detail))
             }
         }
+    }
+
+    try {
+        const {data}: { data: IUser } = yield Effects.call((): AxiosRes<IUser> => authService.userData())
+        yield Effects.put(authActions.saveUser(data));
+    } catch (error) {
+        if (isAxiosError(error)) {
+            const serverError = error as AxiosError<{ detail: string }>;
+            if (serverError && serverError.response) {
+                authService.removeTokens()
+                yield Effects.put(authActions.saveUserError())
+            }
+        }
+        history.replace('/login')
     }
 }
 
@@ -47,7 +66,6 @@ function* loadUser() {
 }
 
 
-
 function* loadBasicData() {
     yield Effects.all([
         Effects.fork(loadUser),
@@ -55,8 +73,30 @@ function* loadBasicData() {
 }
 
 function* loginSaga() {
-    yield takeLatest(authActions.login.type, loginOnAction)
+    yield takeEvery(authActions.login.type, loginOnAction)
 }
 
 
-export {loginSaga, loadBasicData}
+function* ActivateUserOnAction({data: formData}: { data: ILoadData }) {
+    try {
+        console.log(formData)
+        yield Effects.call(() => authService.activateUser(formData.data, formData.token));
+        yield Effects.put(authActions.logOut());
+        history.replace('/login')
+    } catch (error) {
+        if (isAxiosError(error)) {
+            const serverError = error as AxiosError<{ details: string }>;
+            if (serverError && serverError.response) {
+                console.log(serverError.response)
+                yield Effects.put(authActions.activateUserFailure(serverError.response.data.details))
+            }
+        }
+    }
+}
+
+function* activateUser() {
+    yield takeEvery(authActions.activateUser.type, ActivateUserOnAction)
+}
+
+
+export {loginSaga, loadBasicData, activateUser}

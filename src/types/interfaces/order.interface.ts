@@ -1,9 +1,17 @@
+import {IUser} from "./auth.interface";
 
 export interface IGetOrderResponse {
     count: number,
     previous: string | number,
     next: string | number,
     results: IOrder[] | []
+}
+
+export interface IGetUsersResponse {
+    count: number,
+    previous: string | null,
+    next: string | null,
+    results: IUser[] | []
 }
 
 export interface IOrderInitialState {
@@ -81,13 +89,26 @@ export interface ICreateGroup {
     name: string
 }
 
+export interface ICreateUser {
+    email: string,
+    profile: {
+        name: string,
+        surname: string
+    }
+}
+
+export interface IPassword {
+    password: string
+    password_confirmation:string
+}
+
 
 export interface IComment {
     id: number,
     comment: string,
     created_at: string,
-    updated_at:string,
-    manager:IManager
+    updated_at: string,
+    manager: IManager
 }
 
 

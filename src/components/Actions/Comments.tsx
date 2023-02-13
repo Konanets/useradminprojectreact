@@ -12,18 +12,21 @@ import SendIcon from '@mui/icons-material/Send';
 import {useForm} from "react-hook-form";
 
 import {Comment} from "./Comment";
-import {useAppDispatch} from "../../utils";
+import {useAppDispatch, useAppSelector} from "../../utils";
 import {orderActions} from "../../redux/slices";
 import {IComment} from "../../types";
 
 interface ICommentsProps {
     comments: IComment[],
-    id: number
+    id: number,
+    manager_id: number
 }
 
-const Comments: FC<ICommentsProps> = ({comments, id}) => {
+const Comments: FC<ICommentsProps> = ({comments, id, manager_id}) => {
 
     const [open, setOpen] = useState(false);
+
+    const {user} = useAppSelector(state => state.authReducer)
 
     const dispatch = useAppDispatch()
 
@@ -49,6 +52,7 @@ const Comments: FC<ICommentsProps> = ({comments, id}) => {
         dispatch({type: orderActions.sendComment.type, data})
     }
 
+    const notYour = !!user && user!.id === manager_id || !!user && user!.id !== manager_id && manager_id === 0
 
     useEffect(() => {
         if (open) {
@@ -79,9 +83,9 @@ const Comments: FC<ICommentsProps> = ({comments, id}) => {
                 <DialogContent dividers={true} id="scroll-dialog-description"
                                ref={descriptionElementRef}
                                tabIndex={-1}>
-                        {comments.map((comment) => (
-                                <Comment key={`comment-${comment.id}`} comment={comment}/>
-                        ))}
+                    {comments.map((comment) => (
+                        <Comment key={`comment-${comment.id}`} comment={comment}/>
+                    ))}
                 </DialogContent>
                 <DialogActions sx={{
                     maxHeight: '250px'
@@ -98,8 +102,10 @@ const Comments: FC<ICommentsProps> = ({comments, id}) => {
                     </form>
                 </DialogActions>
             </Dialog>
-            <Badge badgeContent={comments.length} color="success">
-                <Preview fontSize={'medium'} onClick={handleClickOpen()} color={'primary'}/>
+            <Badge badgeContent={notYour ? comments.length : 0} color="success">
+                <Preview fontSize={'medium'} onClick={notYour ? handleClickOpen() : () => {
+                }}
+                         color={notYour ? 'primary' : 'disabled'}/>
             </Badge>
         </Box>
     );

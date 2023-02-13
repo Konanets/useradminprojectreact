@@ -18,7 +18,6 @@ import {IEditOrder, IOrder, numberFieldsEnum} from "../../types";
 import {useAppDispatch, useAppSelector} from "../../utils";
 import {groupActions, orderActions} from "../../redux/slices";
 import {AddGroup} from "./AddGroup";
-import {joiResolver} from "@hookform/resolvers/joi/dist/joi";
 
 
 interface IEditOrderProps {
@@ -35,6 +34,8 @@ const EditOrder: FC<IEditOrderProps> = memo(({prevOrder, open, setOpen}) => {
     const [openCreateGroup, setOpenCreateGroup] = useState<boolean>(false)
 
     const [groupPage, setGroupPage] = useState<number>(1)
+
+    const {user} = useAppSelector(state => state.authReducer)
 
     const {groups, loading, next} = useAppSelector(state => state.groupReducer)
 
@@ -133,6 +134,9 @@ const EditOrder: FC<IEditOrderProps> = memo(({prevOrder, open, setOpen}) => {
             setValue('group', '' + prevOrder.group.id)
         }
     }, [])
+
+    let manager_id = !!prevOrder.manager ? prevOrder.manager.user : 0
+    const notYour = !!user && user!.id === manager_id || !!user && user!.id !== manager_id && manager_id === 0
 
     return (
         <Box sx={{
@@ -292,7 +296,8 @@ const EditOrder: FC<IEditOrderProps> = memo(({prevOrder, open, setOpen}) => {
                 {openCreateGroup && <AddGroup open={openCreateGroup} setOpen={setOpenCreateGroup}/>}
             </Dialog>
 
-            <Edit fontSize={'medium'} onClick={handleClickOpen()} color={'success'}/>
+            <Edit fontSize={'medium'} onClick={notYour ? handleClickOpen() : (() => {
+            })} color={notYour ? 'success' : 'disabled'}/>
         </Box>
     );
 })

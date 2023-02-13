@@ -1,3 +1,5 @@
 export * from './OrdersList'
 export * from './OrdersFilter'
 export * from './OrderActions'
+export * from './UserData'
+export * from './UsersFormDialog'

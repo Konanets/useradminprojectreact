@@ -3,7 +3,8 @@ const baseURL = 'http://127.0.0.1:8000/api/v1'
 const urls = {
     auth: {
         login: '/auth',
-        refresh: '/auth/refresh'
+        refresh: '/auth/refresh',
+        activate: '/auth/activate'
     },
     users: {
         my: '/users/my'
@@ -14,6 +15,10 @@ const urls = {
     },
     groups: {
         groups: '/groups'
+    },
+    admin: {
+        users: '/admin/users',
+        token: '/re_token'
     }
 }
 

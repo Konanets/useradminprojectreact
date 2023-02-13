@@ -1,6 +1,6 @@
 import {axiosInstance, AxiosRes} from "./axios.service";
 
-import {ILogin, ILoginTokens, IUser} from "../types";
+import {ILogin, ILoginTokens, IPassword, IUser} from "../types";
 import {urls} from "../configs";
 
 const _accessToken = 'access'
@@ -10,6 +10,9 @@ const authService = {
     login: (user: ILogin): AxiosRes<ILoginTokens> => axiosInstance.post(urls.auth.login, user),
     refresh: (refresh: string): AxiosRes<ILoginTokens> => axiosInstance.post(urls.auth.refresh, {refresh}),
     userData: (): AxiosRes<IUser> => axiosInstance.get(urls.users.my),
+    activateUser: (data: IPassword, token: string) => axiosInstance.post(urls.auth.activate + '/' + token, {
+        password: data.password
+    }),
     saveTokens: ({access, refresh}: ILoginTokens) => {
         localStorage.setItem(_accessToken, access);
         localStorage.setItem(_refreshToken, refresh);

@@ -1,6 +1,15 @@
 import {all} from 'redux-saga/effects'
 
-import {loadBasicData, loadOrder, loginSaga, commentSaga, editOrderSaga, createNewGroup} from '.';
+import {
+    loadBasicData,
+    loadOrder,
+    loginSaga,
+    commentSaga,
+    editOrderSaga,
+    createNewGroup,
+    loadUsers,
+    createNewUser, activateUser
+} from '.';
 import {loadGroup} from "./group.saga";
 
 function* rootSaga() {
@@ -11,7 +20,10 @@ function* rootSaga() {
         commentSaga(),
         loadGroup(),
         editOrderSaga(),
-        createNewGroup()
+        createNewGroup(),
+        loadUsers(),
+        createNewUser(),
+        activateUser()
     ])
 }
 

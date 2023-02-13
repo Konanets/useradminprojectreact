@@ -14,7 +14,7 @@ import {Visibility, VisibilityOff, Done} from "@mui/icons-material";
 import {useForm, SubmitHandler} from "react-hook-form";
 import {joiResolver} from "@hookform/resolvers/joi";
 
-import {loginFormValidator} from "../utils";
+import {loginFormValidators} from "../utils";
 import {ILogin} from "../types";
 import {useAppDispatch, useAppSelector} from "../utils";
 import {authActions} from "../redux/slices";
@@ -24,7 +24,7 @@ const LoginPage: FC = () => {
         register,
         handleSubmit,
         formState: {errors},
-    } = useForm<ILogin>({resolver: joiResolver(loginFormValidator), mode: 'all'})
+    } = useForm<ILogin>({resolver: joiResolver(loginFormValidators), mode: 'all'})
 
     const dispatch = useAppDispatch()
 
@@ -122,8 +122,7 @@ const LoginPage: FC = () => {
             </Container>
         </Container>
 
-    )
-        ;
+    );
 };
 
 export {LoginPage};

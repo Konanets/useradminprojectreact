@@ -1,6 +1,7 @@
 import {styled} from "@mui/material/styles";
 import MuiAppBar, {AppBarProps as MuiAppBarProps} from '@mui/material/AppBar';
 import {
+    Avatar,
     Box, Container,
     CssBaseline,
     Divider,
@@ -14,12 +15,10 @@ import {useState} from "react";
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import {useLocation, useNavigate, useSearchParams} from "react-router-dom";
+import {Outlet, useLocation, useNavigate} from "react-router-dom";
 
-import {OrdersFilter, OrdersList} from "../components";
 import {authActions} from "../redux/slices";
-import {useAppDispatch} from "../utils";
-import {IOrderParams} from "../types";
+import {stringToColor, useAppDispatch, useAppSelector} from "../utils";
 
 const drawerWidth = 240;
 
@@ -71,17 +70,13 @@ const DrawerHeader = styled('div')(({theme}) => ({
     justifyContent: 'flex-end',
 }));
 
-function MainPage() {
-
-    let query: IOrderParams = {}
+const MainLayout = () => {
 
     const theme = useTheme();
-    const [searchParams, setSearchParams] = useSearchParams();
 
-    let current_page = searchParams.get('page')
+    const {user} = useAppSelector((state) => state.authReducer)
 
     const [open, setOpen] = useState(false);
-    const [page, setPage] = useState((current_page && current_page.length) ? +current_page : 1)
 
     const location = useLocation()
     const navigation = useNavigate()
@@ -109,9 +104,13 @@ function MainPage() {
                     >
                         <MenuIcon/>
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div">
-                        Admin tool
+                    {!!user && <Avatar sx={{marginX: 1, bgcolor: stringToColor(user.profile.name)}}
+                                       alt={user.profile.name}>{user.profile.name[0] + user.profile.surname[0]}</Avatar>}
+                    <Typography textAlign={'center'} variant="h6" noWrap component="div">
+                        {!!user && 'Welcome ' + user.profile.name}
                     </Typography>
+
+
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -140,6 +139,14 @@ function MainPage() {
                             Orders
                         </MuiLink>
                     </Typography>
+                    {
+                        (!!user && user.is_superuser) && <Typography>
+                            <MuiLink underline="none" sx={{fontSize: 22, cursor: 'pointer'}}
+                                     onClick={() => location.pathname !== '/admin' && navigation('/admin')}>
+                                Admin
+                            </MuiLink>
+                        </Typography>
+                    }
                     <Typography>
                         <MuiLink underline="none" sx={{fontSize: 22, cursor: 'pointer'}}
                                  onClick={() => dispatch(authActions.logOut())}>
@@ -151,11 +158,10 @@ function MainPage() {
             </Drawer>
             <Main open={open}>
                 <DrawerHeader/>
-                <OrdersFilter query={query} setPage={setPage}/>
-                <OrdersList query={query} setPage={setPage} page={page}/>
+                <Outlet/>
             </Main>
         </Box>
-    );
-}
+    )
+};
 
-export {MainPage}
+export {MainLayout};
