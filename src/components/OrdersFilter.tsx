@@ -1,6 +1,6 @@
 import {
     Button, Checkbox,
-    FormControl,
+    FormControl, IconButton,
     InputLabel,
     MenuItem,
     Select,
@@ -13,8 +13,11 @@ import dayjs, {Dayjs} from "dayjs";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import {FC, useEffect, useState} from "react";
 import {DesktopDatePicker, LocalizationProvider} from "@mui/x-date-pickers";
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
 
-import {IOrderParams} from "../types";
+import {IOrderParams, orderParamsEnum} from "../types";
+import {axiosInstance} from "../services";
+import {urls} from "../configs";
 
 interface IOrderFilterProps {
     query: IOrderParams,
@@ -38,7 +41,7 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
     const navigator = useNavigate()
 
     const onHandleChange = (data: IOrderParams) => {
-
+        console.log(5)
         const checkStartDate = !(isNaN(Number(startDate?.date())) &&
             isNaN(Number(startDate?.month())) &&
             isNaN(Number(startDate?.year())))
@@ -244,6 +247,35 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
                     })
                     navigator(0)
                 }}>Reset</Button>
+
+                <IconButton type={'submit'} onClick={() => {
+                    let params:IOrderParams = {}
+
+                    searchParams.forEach((item, key) => {
+                        if (key in orderParamsEnum && item.length >= 1 || (key in orderParamsEnum && item[0] === '-' && item.slice(1) in orderParamsEnum)) {
+                            params = {
+                                [key]: item,
+                                ...params
+                            }
+                        }
+                    })
+
+                    axiosInstance.get(urls.orders.excel, {
+                        responseType: 'arraybuffer',
+                        params
+                    },).then((response) => {
+                        const outputFilename = `${Date.now()}.xls`;
+                        const url = window.URL.createObjectURL(new Blob([response.data]))
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', outputFilename);
+                        document.body.appendChild(link);
+                        link.click();
+                    })
+                }}>
+                    <SaveAltIcon color={'primary'}/>
+                </IconButton>
+
             </Toolbar>
         </form>
 

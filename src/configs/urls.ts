@@ -11,7 +11,8 @@ const urls = {
     },
     orders: {
         orders: '/orders',
-        comments: '/comments'
+        comments: '/comments',
+        excel: '/orders/excel'
     },
     groups: {
         groups: '/groups'
