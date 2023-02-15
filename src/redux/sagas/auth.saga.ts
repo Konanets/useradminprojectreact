@@ -46,7 +46,7 @@ function* loginOnAction({data: user}: { data: ILogin }) {
 
 function* loadUser() {
     if (!authService.getAccessToken() && !authService.getRefreshToken()) {
-        history.replace('/login')
+        // history.replace('/login')
         return
     }
     try {
