@@ -19,7 +19,13 @@ const urls = {
     },
     admin: {
         users: '/admin/users',
-        token: '/re_token'
+        token: '/re_token',
+        statistic: {
+            orders: '/admin/statistic/orders',
+            user: '/admin/statistic/users'
+        },
+        ban: '/ban',
+        unban: '/unban'
     }
 }
 

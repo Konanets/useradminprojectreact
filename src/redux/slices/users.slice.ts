@@ -51,6 +51,10 @@ const usersSlice = createSlice({
         createNewUserFailure: (state, action: PayloadAction<string>) => {
             state.error = action.payload
             state.isLoading = 'failure'
+        },
+        setNewUser: (state, action: PayloadAction<IUser>) => {
+            state.users = state.users!.map(item => item.id === action.payload.id ? action.payload : item)
+            console.log(action.payload)
         }
     }
 })
@@ -63,7 +67,8 @@ const {
         loadUsersFailure,
         createNewUserFailure,
         createNewUser,
-        createNewUserSuccess
+        createNewUserSuccess,
+        setNewUser
     }
 } = usersSlice
 
@@ -73,7 +78,8 @@ const usersActions = {
     loadUsersFailure,
     createNewUserFailure,
     createNewUser,
-    createNewUserSuccess
+    createNewUserSuccess,
+    setNewUser
 }
 
 export {usersReducer, usersActions}

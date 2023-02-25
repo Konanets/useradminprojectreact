@@ -41,6 +41,16 @@ export interface IOrderParams {
     my?: boolean
 }
 
+export interface IStatisticsStatuses {
+    count: number,
+    status: string
+}
+
+export interface IStatistics {
+    total_count: number,
+    statuses: IStatisticsStatuses[]
+}
+
 
 export interface IOrder {
     id: number,
@@ -99,7 +109,7 @@ export interface ICreateUser {
 
 export interface IPassword {
     password: string
-    password_confirmation:string
+    password_confirmation: string
 }
 
 
