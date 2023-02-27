@@ -105,7 +105,7 @@ const UserData: FC<IUserDataProps> = ({user}) => {
                                                                                                      fontSize={'large'}
                                                                                                      style={{color: item}}/>}
                                                                                                  label={
-                                                                                                     <Typography>{statistic.statuses[index].status === null ? 'null' : statistic!.statuses[index].status}</Typography>}/>)}
+                                                                                                     <Typography>{statistic.statuses[index].status === null ? 'null ' + statistic!.statuses[index].count : statistic!.statuses[index].status + ' ' + statistic!.statuses[index].count}</Typography>}/>)}
                     </Box>
                 </Grid>}
 

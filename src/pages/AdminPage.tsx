@@ -69,10 +69,12 @@ const AdminPage = () => {
                         />}
                 </Box>
                 {!!pieData && <Box>
-                    {colors.map((item, index) => <Chip key={index}
-                        icon={<PieChartIcon fontSize={'large'} style={{color: item}}/>}
-                        label={
-                            <Typography>{pieData!.statuses[index]!.status === null ? 'null' : pieData!.statuses[index]!.status}</Typography>}/>)}
+                    {colors.map((item, index) => index < pieData?.statuses.length && <Chip key={index}
+                                                                                           icon={<PieChartIcon
+                                                                                               fontSize={'large'}
+                                                                                               style={{color: item}}/>}
+                                                                                           label={
+                                                                                               <Typography>{pieData.statuses[index].status === null ? 'null ' + pieData!.statuses[index].count : pieData!.statuses[index].status + ' ' + pieData!.statuses[index].count}</Typography>}/>)}
                 </Box>}
             </Box>
             <Toolbar>

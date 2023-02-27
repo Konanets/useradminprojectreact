@@ -1,7 +1,7 @@
 import {
     Button, Checkbox,
     FormControl, IconButton,
-    InputLabel,
+    InputLabel, LinearProgress,
     MenuItem,
     Select,
     TextField,
@@ -18,6 +18,7 @@ import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import {IOrderParams, orderParamsEnum} from "../types";
 import {axiosInstance} from "../services";
 import {urls} from "../configs";
+import {Skeleton} from "@mui/lab";
 
 interface IOrderFilterProps {
     query: IOrderParams,
@@ -30,6 +31,7 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [startDate, setStartDate] = useState<Dayjs | null>(dayjs(''));
     const [endDate, setEndDate] = useState<Dayjs | null>(dayjs(''));
+    const [resset, setResset] = useState(false)
 
     const {
         register,
@@ -41,7 +43,6 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
     const navigator = useNavigate()
 
     const onHandleChange = (data: IOrderParams) => {
-        console.log(5)
         const checkStartDate = !(isNaN(Number(startDate?.date())) &&
             isNaN(Number(startDate?.month())) &&
             isNaN(Number(startDate?.year())))
@@ -134,6 +135,12 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
             })
         }
     }, [])
+
+    useEffect(() => {
+        setResset(false)
+    }, [resset])
+
+    if (resset) return null
 
     return (
         <form onSubmit={handleSubmit(onHandleChange)}>
@@ -238,18 +245,16 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
                 <Checkbox defaultChecked={!!searchParams.get('my')} {...register('my')} />My
                 <Button type={'submit'} size={'small'}>Find</Button>
                 <Button size={'small'} onClick={() => {
-                    reset()
                     query = {}
-                    setStartDate(dayjs(''))
-                    setEndDate(dayjs(''))
                     setSearchParams(prev => {
-                        return {...prev, ...query}
+                        return {}
                     })
-                    navigator(0)
+                    reset()
+                    setResset(true)
                 }}>Reset</Button>
 
                 <IconButton type={'submit'} onClick={() => {
-                    let params:IOrderParams = {}
+                    let params: IOrderParams = {}
 
                     searchParams.forEach((item, key) => {
                         if (key in orderParamsEnum && item.length >= 1 || (key in orderParamsEnum && item[0] === '-' && item.slice(1) in orderParamsEnum)) {
