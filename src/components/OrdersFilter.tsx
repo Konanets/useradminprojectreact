@@ -11,7 +11,7 @@ import {useForm} from "react-hook-form";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, {Dayjs} from "dayjs";
 import {useNavigate, useSearchParams} from "react-router-dom";
-import {FC, useEffect, useState} from "react";
+import {FC, useEffect, useRef, useState} from "react";
 import {DesktopDatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 
@@ -32,15 +32,23 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
     const [startDate, setStartDate] = useState<Dayjs | null>(dayjs(''));
     const [endDate, setEndDate] = useState<Dayjs | null>(dayjs(''));
     const [resset, setResset] = useState(false)
+    const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout>();
+    const [course, setCourse] = useState<string>('')
+    const [courseFormat, setCourseFormat] = useState<string>('')
+    const [courseType, setCourseType] = useState<string>('')
+
 
     const {
         register,
         handleSubmit,
         setValue,
-        reset
+        reset,
+        watch,
+        getValues
     } = useForm<IOrderParams>()
 
     const navigator = useNavigate()
+
 
     const onHandleChange = (data: IOrderParams) => {
         const checkStartDate = !(isNaN(Number(startDate?.date())) &&
@@ -77,6 +85,28 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
         })
     }
 
+    const handleInputChange = () => {
+        if (typingTimeout) {
+            clearTimeout(typingTimeout);
+        }
+        setTypingTimeout(setTimeout(() => {
+            handleSubmit(onHandleChange)();
+        }, 500));
+    };
+
+    useEffect(() => {
+        if (typeof course !== 'undefined') {
+            setValue('course', course)
+        }
+        if (typeof courseFormat !== 'undefined') {
+            setValue('course_format', courseFormat)
+        }
+        if (typeof courseType !== 'undefined') {
+            setValue('course_type', courseType)
+        }
+        handleInputChange()
+    }, [course, courseFormat, courseType, startDate, endDate])
+
     useEffect(() => {
         let name = searchParams.get('name')
         if (name && name.length > 1) {
@@ -98,17 +128,20 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
         if (age && age.length > 1) {
             setValue('age', +age)
         }
-        let course = searchParams.get('course')
-        if (course && course.length > 1) {
-            setValue('course', course)
+        let newCourse = searchParams.get('course')
+        if (newCourse && newCourse.length > 1) {
+            setValue('course', newCourse)
+            setCourse(newCourse)
         }
         let course_type = searchParams.get('course_type')
         if (course_type && course_type.length > 1) {
             setValue('course_type', course_type)
+            setCourseType(course_type)
         }
         let course_format = searchParams.get('course_format')
         if (course_format && course_format.length > 1) {
             setValue('course_format', course_format)
+            setCourseFormat(course_format)
         }
         let group = searchParams.get('group')
         if (group && group.length > 1) {
@@ -137,7 +170,12 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
     }, [])
 
     useEffect(() => {
+        setCourseType('')
+        setCourse('')
+        setCourseFormat('')
         setResset(false)
+        setStartDate(dayjs(''))
+        setEndDate(dayjs(''))
     }, [resset])
 
     if (resset) return null
@@ -147,19 +185,24 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
             <Toolbar>
                 <TextField defaultValue={searchParams.get('name') ? searchParams.get('name') : ''} variant={'outlined'}
                            label={'First name'} size={'small'}
-                           sx={{width: 120}} {...register('name')}/>
+                           sx={{width: 120}} {...register('name')}
+                           onInput={handleInputChange}/>
                 <TextField defaultValue={searchParams.get('surname') ? searchParams.get('surname') : ''}
                            variant={'outlined'} label={'Last name'} size={'small'}
-                           sx={{width: 120}} {...register('surname')}/>
+                           sx={{width: 120}} {...register('surname')}
+                           onInput={handleInputChange}/>
                 <TextField defaultValue={searchParams.get('email') ? searchParams.get('email') : ''}
                            variant={'outlined'} label={'Email'} size={'small'}
-                           sx={{width: 120}} {...register('email')}/>
+                           sx={{width: 120}} {...register('email')}
+                           onInput={handleInputChange}/>
                 <TextField defaultValue={searchParams.get('phone') ? searchParams.get('phone') : ''}
                            variant={'outlined'} label={'Phone'} size={'small'}
-                           sx={{width: 120}} {...register('phone')}/>
+                           sx={{width: 120}} {...register('phone')}
+                           onInput={handleInputChange}/>
                 <TextField defaultValue={searchParams.get('age') ? searchParams.get('age') : ''} variant={'outlined'}
                            label={'Age'} size={'small'}
-                           sx={{width: 120}} {...register('age')}/>
+                           sx={{width: 120}} {...register('age')}
+                           onInput={handleInputChange}/>
                 <FormControl sx={{width: 120}}>
                     <InputLabel>Course</InputLabel>
                     <Select
@@ -167,7 +210,12 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
                         size={'small'}
                         label="Course"
                         defaultValue={searchParams.get('course') ? searchParams.get('course') : ''}
+                        value={course}
                         {...register('course')}
+
+                        onChange={(e) => {
+                            setCourse(!!e.target.value ? e.target.value : '')
+                        }}
                     >
                         <MenuItem value={''}>None</MenuItem>
                         <MenuItem value={'FS'}>FS</MenuItem>
@@ -186,7 +234,11 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
                         size={'small'}
                         label="Course Format"
                         defaultValue={searchParams.get('course_format') ? searchParams.get('course_format') : ''}
+                        value={courseFormat}
                         {...register('course_format')}
+                        onChange={(e) => {
+                            setCourseFormat(!!e.target.value ? e.target.value : '')
+                        }}
                     >
                         <MenuItem value={''}>None</MenuItem>
                         <MenuItem value={'online'}>online</MenuItem>
@@ -201,7 +253,11 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
                         size={'small'}
                         label="Course type"
                         defaultValue={searchParams.get('course_type') ? searchParams.get('course_type') : ''}
+                        value={courseType}
                         {...register('course_type')}
+                        onChange={(e) => {
+                            setCourseType(!!e.target.value ? e.target.value : '')
+                        }}
                     >
                         <MenuItem value={''}>None</MenuItem>
                         <MenuItem value={'pro'}>pro</MenuItem>
@@ -214,7 +270,7 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
 
                 <TextField defaultValue={searchParams.get('group') ? searchParams.get('group') : ''}
                            variant={'outlined'} label={'Group'} size={'small'}
-                           sx={{width: 120}} {...register('group')}/>
+                           sx={{width: 120}} {...register('group')} onInput={handleInputChange}/>
 
                 <LocalizationProvider sx={{
                     height: '5px'
