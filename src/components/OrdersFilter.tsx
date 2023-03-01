@@ -18,7 +18,6 @@ import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import {IOrderParams, orderParamsEnum} from "../types";
 import {axiosInstance} from "../services";
 import {urls} from "../configs";
-import {Skeleton} from "@mui/lab";
 
 interface IOrderFilterProps {
     query: IOrderParams,
@@ -95,17 +94,11 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
     };
 
     useEffect(() => {
-        if (typeof course !== 'undefined') {
-            setValue('course', course)
+        if (!!startDate?.date() || !!endDate?.date()) {
+            handleInputChange()
         }
-        if (typeof courseFormat !== 'undefined') {
-            setValue('course_format', courseFormat)
-        }
-        if (typeof courseType !== 'undefined') {
-            setValue('course_type', courseType)
-        }
-        handleInputChange()
-    }, [course, courseFormat, courseType, startDate, endDate])
+
+    }, [startDate, endDate])
 
     useEffect(() => {
         let name = searchParams.get('name')
@@ -130,8 +123,9 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
         }
         let newCourse = searchParams.get('course')
         if (newCourse && newCourse.length > 1) {
-            setValue('course', newCourse)
             setCourse(newCourse)
+            setValue('course', course)
+
         }
         let course_type = searchParams.get('course_type')
         if (course_type && course_type.length > 1) {
@@ -170,12 +164,14 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
     }, [])
 
     useEffect(() => {
-        setCourseType('')
-        setCourse('')
-        setCourseFormat('')
-        setResset(false)
-        setStartDate(dayjs(''))
-        setEndDate(dayjs(''))
+        if (resset) {
+            setCourseType('')
+            setCourse('')
+            setCourseFormat('')
+            setResset(false)
+            setStartDate(dayjs(''))
+            setEndDate(dayjs(''))
+        }
     }, [resset])
 
     if (resset) return null
@@ -214,7 +210,9 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
                         {...register('course')}
 
                         onChange={(e) => {
-                            setCourse(!!e.target.value ? e.target.value : '')
+                            setCourse((!!e.target.value && e.target.value.length > 0) ? e.target.value : '')
+                            setValue('course', (!!e.target.value && e.target.value.length > 0) ? e.target.value : '')
+                            handleInputChange()
                         }}
                     >
                         <MenuItem value={''}>None</MenuItem>
@@ -237,7 +235,9 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
                         value={courseFormat}
                         {...register('course_format')}
                         onChange={(e) => {
-                            setCourseFormat(!!e.target.value ? e.target.value : '')
+                            setCourseFormat((!!e.target.value && e.target.value.length > 0) ? e.target.value : '')
+                            setValue('course_format', (!!e.target.value && e.target.value.length > 0) ? e.target.value : '')
+                            handleInputChange()
                         }}
                     >
                         <MenuItem value={''}>None</MenuItem>
@@ -256,7 +256,9 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
                         value={courseType}
                         {...register('course_type')}
                         onChange={(e) => {
-                            setCourseType(!!e.target.value ? e.target.value : '')
+                            setCourseType((!!e.target.value && e.target.value.length > 0) ? e.target.value : '')
+                            setValue('course_type', (!!e.target.value && e.target.value.length > 0) ? e.target.value : '')
+                            handleInputChange()
                         }}
                     >
                         <MenuItem value={''}>None</MenuItem>
@@ -279,9 +281,7 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
                         label="Start Date"
                         value={startDate}
                         onChange={(newValue) => {
-                            if (newValue) {
-                                setStartDate(newValue)
-                            }
+                            setStartDate(newValue)
                         }}
                         renderInput={(params) => <TextField sx={{width: '160px'}}
                                                             size={'small'} {...params} />}
@@ -290,15 +290,14 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
                         label="End Date"
                         value={endDate}
                         onChange={(newValue) => {
-                            if (newValue) {
-                                setEndDate(newValue)
-                            }
+                            setEndDate(newValue)
                         }}
                         renderInput={(params) => <TextField sx={{width: '160px'}}
                                                             size={'small'} {...params} />}
                     />
                 </LocalizationProvider>
-                <Checkbox defaultChecked={!!searchParams.get('my')} {...register('my')} />My
+                <Checkbox defaultChecked={!!searchParams.get('my')}
+                           {...register('my')}  onInput={handleInputChange}/>My
                 <Button type={'submit'} size={'small'}>Find</Button>
                 <Button size={'small'} onClick={() => {
                     query = {}

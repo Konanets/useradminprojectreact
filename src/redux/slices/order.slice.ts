@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
-import { IGetOrderResponse, IOrderInitialState} from "../../types";
+import {IComment, IGetOrderResponse, IOrderInitialState} from "../../types";
 
 
 const initialState: IOrderInitialState = {
@@ -29,8 +29,17 @@ const orderSlice = createSlice({
         sendComment: (state) => {
             state.changed = false
         },
-        sendCommentSuccess: (state) => {
-            state.changed = true
+        sendCommentSuccess: (state, action: PayloadAction<IComment>) => {
+            state.changed = false
+            if (!!state.orders) {
+                state.orders.results = state.orders.results.map((order) => {
+                    if (order.id === action.payload.order_id) {
+                        order.comments.push(action.payload)
+                    }
+                    return order
+                });
+
+            }
         },
         sendCommentFailure: (state) => {
             state.loading = 'failure'

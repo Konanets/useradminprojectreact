@@ -24,7 +24,7 @@ const AdminPage = () => {
     const [open, setOpen] = useState<boolean>(false)
     const [pieData, setPieData] = useState<IStatistics | null>(null)
 
-    const {users, isLoading, count, next, previous} = useAppSelector(state => state.usersReducer)
+    const {users, isLoading, count} = useAppSelector(state => state.usersReducer)
 
     const handleClickOpen = () => () => {
         setOpen(true);

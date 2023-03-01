@@ -23,8 +23,9 @@ function* loadOrdersByPage({query}: { query: IOrderParams }) {
 
 function* sendComment({data: {comment, id}}: { data: { comment: string, id: number } }) {
     try {
-        yield Effects.call((): AxiosRes<IComment> => orderService.postOrderComment(comment, id));
-        yield Effects.put(orderActions.sendCommentSuccess())
+        const {data}: { data: IComment } = yield Effects.call((): AxiosRes<IComment> => orderService.postOrderComment(comment, id));
+        console.log(data)
+        yield Effects.put(orderActions.sendCommentSuccess(data))
     } catch (error) {
         if (isAxiosError(error)) {
             const serverError = error as AxiosError<{ detail: string }>;
@@ -35,7 +36,7 @@ function* sendComment({data: {comment, id}}: { data: { comment: string, id: numb
     }
 }
 
-function* editOrder({data:{data,id}}: { data: { data: IEditOrder, id: number } }) {
+function* editOrder({data: {data, id}}: { data: { data: IEditOrder, id: number } }) {
     try {
         yield Effects.call((): AxiosRes<IOrder> => orderService.editOrder(data, id));
         yield Effects.put(orderActions.editSuccess())

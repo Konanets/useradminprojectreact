@@ -118,7 +118,8 @@ export interface IComment {
     comment: string,
     created_at: string,
     updated_at: string,
-    manager: IManager
+    manager: IManager,
+    order_id: number
 }
 
 
