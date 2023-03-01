@@ -102,49 +102,49 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
 
     useEffect(() => {
         let name = searchParams.get('name')
-        if (name && name.length > 1) {
+        if (!!name && name.length > 1) {
             setValue('name', name)
         }
         let surname = searchParams.get('surname')
-        if (surname && surname.length > 1) {
+        if (!!surname && surname.length > 1) {
             setValue('surname', surname)
         }
         let email = searchParams.get('email')
-        if (email && email.length > 1) {
+        if (!!email && email.length > 1) {
             setValue('email', email)
         }
         let phone = searchParams.get('phone')
-        if (phone && phone.length > 1) {
+        if (!!phone && phone.length > 1) {
             setValue('phone', phone)
         }
         let age = searchParams.get('age')
-        if (age && age.length > 1) {
+        if (!!age && age.length > 1) {
             setValue('age', +age)
         }
         let newCourse = searchParams.get('course')
-        if (newCourse && newCourse.length > 1) {
+        if (!!newCourse && newCourse.length > 1) {
             setCourse(newCourse)
             setValue('course', course)
 
         }
         let course_type = searchParams.get('course_type')
-        if (course_type && course_type.length > 1) {
+        if (!!course_type && course_type.length > 1) {
             setValue('course_type', course_type)
             setCourseType(course_type)
         }
         let course_format = searchParams.get('course_format')
-        if (course_format && course_format.length > 1) {
+        if (!!course_format && course_format.length > 1) {
             setValue('course_format', course_format)
             setCourseFormat(course_format)
         }
         let group = searchParams.get('group')
-        if (group && group.length > 1) {
+        if (!!group && group.length > 1) {
             setValue('group', group)
         }
 
         const paramsStartDate = searchParams.get('start_date')
 
-        if (paramsStartDate && paramsStartDate.split('-').length === 3) {
+        if (!!paramsStartDate && paramsStartDate.split('-').length === 3) {
             let splited = paramsStartDate.split('-')
 
             setStartDate(() => {
@@ -154,7 +154,7 @@ const OrdersFilter: FC<IOrderFilterProps> = ({query, setPage}) => {
 
         const paramsEndDate = searchParams.get('end_date')
 
-        if (paramsEndDate && paramsEndDate.split('-').length === 3) {
+        if (!!paramsEndDate && paramsEndDate.split('-').length === 3) {
             let splited = paramsEndDate.split('-')
 
             setEndDate(() => {
